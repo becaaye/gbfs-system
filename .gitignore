@@ -1,0 +1,27 @@
+# Node modules directory
+node_modules/
+
+# Distribution directory
+dist/
+
+# Log files
+*.log
+
+# IDE/Editor directories and configuration files
+.vscode/
+
+# Operating System generated files
+**/.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+
+# npm debug log
+npm-debug.log*
+
+# Environment configuration files
+.env
+
+# Temporary files
+*.tmp
+*.tmp.*
