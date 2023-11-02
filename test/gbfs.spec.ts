@@ -1,13 +1,13 @@
-import { Gbfs } from "../src/GbfsDataFetcher";
+import { Gbfs } from '../src/gbfs/Gbfs';
 
-describe("Gbfs class", () => {
+describe('Gbfs class', () => {
   let gbfs: Gbfs;
-  const autoDiscoveryURL = "https://gbfs.velobixi.com/gbfs/gbfs.json";
-  const preferredLanguage = "fr";
-  const stationId = "514";
+  const autoDiscoveryURL = 'https://gbfs.velobixi.com/gbfs/gbfs.json';
+  const preferredLanguage = 'fr';
+  const stationId = '514';
 
-  beforeEach(() => {
-    gbfs = new Gbfs(autoDiscoveryURL);
+  beforeEach(async () => {
+    gbfs = await Gbfs.create(autoDiscoveryURL);
   });
 
   afterEach(() => {
@@ -15,14 +15,21 @@ describe("Gbfs class", () => {
   });
 
   if (preferredLanguage) {
-    it("should set preferred language properly", () => {
+    it('should set preferred language properly', () => {
       gbfs.setPreferredFeedLanguage = preferredLanguage;
       expect(gbfs.getPreferredFeedLanguage).toBe(preferredLanguage);
-      // expect(gbfs.isLanguageSupported(preferredLanguage)).toBeTruthy();
     });
   }
 
-  it("should fetch station information", async () => {
+  it('should get an array of the supported languages', () => {
+    expect(gbfs.getSupportedLanguages()).toMatchObject(['en','fr']);
+  });
+
+  it('should return true if the passed parameter language is supported', () => {
+    expect(gbfs.isLanguageSupported(preferredLanguage)).toBeTruthy();
+  });
+
+  it('should fetch station information', async () => {
     const result = await gbfs.stationInfo(stationId);
     expect(result).toMatchObject({
       station_id: expect.any(String),
@@ -32,7 +39,7 @@ describe("Gbfs class", () => {
     });
   });
 
-  it("should fetch station status", async () => {
+  it('should fetch station status', async () => {
     const result = await gbfs.stationStatus(stationId);
     expect(result).toMatchObject({
       station_id: expect.any(String),
@@ -42,7 +49,7 @@ describe("Gbfs class", () => {
     });
   });
 
-  it("should fetch system information", async () => {
+  it('should fetch system information', async () => {
     const result = await gbfs.systemInfo();
     expect(result).toMatchObject({
       system_id: expect.any(String),
