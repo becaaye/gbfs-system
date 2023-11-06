@@ -78,10 +78,10 @@ interface StationInfo {
 
 interface SystemInfo {
   system_id: string;
-  languages: string[];
-  name: string[];
-  short_name?: string[];
-  operator?: string[];
+  language?: string;
+  name?: string;
+  short_name?: string;
+  operator?: string;
   opening_hours?: string;
   start_date?: string;
   url?: URL;

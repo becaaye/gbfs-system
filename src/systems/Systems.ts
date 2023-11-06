@@ -44,7 +44,6 @@ export class Systems {
     try {
       if (location) {
         location = this.normalizeString(location);
-        // this.globalSystems ?? this.getAllSystems();
 
         // Search for systems with the given location (city)
         foundSystems = this.globalSystems.filter((system: System) =>
@@ -69,7 +68,6 @@ export class Systems {
     try {
       if (countryCode) {
         countryCode = this.normalizeString(countryCode);
-        // this.globalSystems ?? this.getAllSystems();
 
         // Search for systems with the given countryCode
         foundSystems = this.globalSystems.filter(
@@ -94,9 +92,10 @@ export class Systems {
     let found: System[] = [];
     try {
       if (systemID) {
-        // this.globalSystems ?? this.getAllSystems();
+        systemID = this.normalizeString(systemID);
+
         found = this.globalSystems.filter(
-          (system: System) => system.systemID === systemID
+          (system: System) => this.normalizeString(system.systemID) === systemID
         );
       }
     } catch (error) {
@@ -123,7 +122,6 @@ export class Systems {
     try {
       if (name) {
         name = this.normalizeString(name);
-        // this.globalSystems ?? this.getAllSystems();
 
         // Search for systems with the given name (city)
         foundSystems = this.globalSystems.filter((system: System) =>
@@ -136,30 +134,6 @@ export class Systems {
     }
     return foundSystems;
   }
-
-  // /**
-  //  * Fetch all registered systems in MobilityData's system catalog
-  //  *
-  //  * @returns An array of all Systems
-  //  */
-  // public getAllSystems(): System[] {
-  //   try {
-  //     if (!this.globalSystems) {
-  //       // fetch global systems
-  //       const response = await fetch(GBFS_SYSTEM_CSV_URL);
-  //       const systemCSVRawBody = await response.text();
-
-  //       // Convert CSV data System Objects
-  //       this.globalSystems = await this.convertCSVtoObjects(systemCSVRawBody);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw error;
-  //   }
-
-  //   // return data;
-  //   return this.globalSystems;
-  // }
 
   /**
    * Converts CSV data to JSON.
