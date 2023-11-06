@@ -1,4 +1,4 @@
-import { Gbfs } from '../src/gbfs/Gbfs';
+/* import { Gbfs } from '../src/gbfs/Gbfs';
 import { Systems } from '../src/systems/Systems';
 
 describe('testing Gbfs and System classes', () => {
@@ -21,4 +21,4 @@ describe('testing Gbfs and System classes', () => {
     console.log(systemInfo);
   });
 
-});
+}); */
