@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "outDir": "dist",
+    "moduleResolution": "NodeNext",
+    
     "declaration": true,
+    "declarationMap": true,
     "forceConsistentCasingInFileNames": true,
     "removeComments": true,
     "sourceMap": true,
@@ -16,8 +22,7 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Module Resolution Options */
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "esModuleInterop": true,
     "skipLibCheck": true,
 
@@ -25,9 +30,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
-    "rootDir": "./src",
-    "lib": ["es2019", "dom"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "rootDir": "src",
+    "lib": ["ESNext", "dom"],
+    "typeRoots": ["node_modules/@types", "src/types"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]

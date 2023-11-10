@@ -1,21 +1,21 @@
 import csvParser from "csv-parser";
-import { System } from "./System";
-import { GBFS_SYSTEM_CSV_URL } from  "../utils/constants";
+import { Operator } from "./Operator.js";
 
 /**
  * Finds nearby bike systems in a given city based on the client's location.
  */
 export class Systems {
-  private globalSystems: System[];
+  public static GBFS_SYSTEM_CSV_URL = "https://raw.githubusercontent.com/MobilityData/gbfs/master/systems.csv";
+  private globalSystems: Operator[];
 
-  private constructor(global: System[]) {
+  private constructor(global: Operator[]) {
     this.globalSystems = global;
   }
 
   public static async initialize(): Promise<Systems> {
     try {
       // fetch global systems
-      const response = await fetch(GBFS_SYSTEM_CSV_URL);
+      const response = await fetch(this.GBFS_SYSTEM_CSV_URL);
       const systemCSVRawBody = await response.text();
 
       // Convert CSV data System Objects
@@ -29,7 +29,7 @@ export class Systems {
     }
   }
 
-  public get getAllSystems(): System[]{
+  public get getAllSystems(): Operator[]{
     return this.globalSystems;
   }
 
@@ -39,15 +39,15 @@ export class Systems {
    * @param location - The city name to look for. exp : 'Paris'
    * @returns An array of found Systems in that location
    */
-  public findByLocation(location: string): System[] {
-    let foundSystems: System[] = [];
+  public findByLocation(location: string): Operator[] {
+    let foundSystems: Operator[] = [];
     try {
       if (location) {
         location = this.normalizeString(location);
 
         // Search for systems with the given location (city)
-        foundSystems = this.globalSystems.filter((system: System) =>
-          this.normalizeString(system.location).includes(location)
+        foundSystems = this.globalSystems.filter((operator: Operator) =>
+          this.normalizeString(operator.location).includes(location)
         );
       }
     } catch (error) {
@@ -63,16 +63,16 @@ export class Systems {
    * @param countryCode - The country code to look for. exp: 'CA'
    * @returns An array of found Systems in that country
    */
-  public findByCountryCode(countryCode: string): System[] {
-    let foundSystems: System[] = [];
+  public findByCountryCode(countryCode: string): Operator[] {
+    let foundSystems: Operator[] = [];
     try {
       if (countryCode) {
         countryCode = this.normalizeString(countryCode);
 
         // Search for systems with the given countryCode
         foundSystems = this.globalSystems.filter(
-          (system: System) =>
-            this.normalizeString(system.countryCode) === countryCode
+          (operator: Operator) =>
+            this.normalizeString(operator.countryCode) === countryCode
         );
       }
     } catch (error) {
@@ -88,14 +88,14 @@ export class Systems {
    * @param systemID - The systemID parameter to look for. exp: 'Bixi_MTL'
    * @returns a System object
    */
-  public findBySystemID(systemID: string): System {
-    let found: System[] = [];
+  public findBySystemID(systemID: string): Operator {
+    let found: Operator[] = [];
     try {
       if (systemID) {
         systemID = this.normalizeString(systemID);
 
         found = this.globalSystems.filter(
-          (system: System) => this.normalizeString(system.systemID) === systemID
+          (operator: Operator) => this.normalizeString(operator.systemID) === systemID
         );
       }
     } catch (error) {
@@ -117,14 +117,14 @@ export class Systems {
    * @param name - A name to look for. exp : 'Paris'
    * @returns An array of found Systems having that name
    */
-  public findByName(name: string): System[] {
-    let foundSystems: System[] = [];
+  public findByName(name: string): Operator[] {
+    let foundSystems: Operator[] = [];
     try {
       if (name) {
         name = this.normalizeString(name);
 
         // Search for systems with the given name (city)
-        foundSystems = this.globalSystems.filter((system: System) =>
+        foundSystems = this.globalSystems.filter((system: Operator) =>
           this.normalizeString(system.name).includes(name)
         );
       }
@@ -139,16 +139,16 @@ export class Systems {
    * Converts CSV data to JSON.
    *
    * @param csvData - The CSV data to convert.
-   * @returns A promise that resolves to an array of System object (System[]) representing CSV data.
+   * @returns A promise that resolves to an array of System object (Operator[]) representing CSV data.
    */
-  private static async convertCSVtoObjects(csvData: string): Promise<System[]> {
+  private static async convertCSVtoObjects(csvData: string): Promise<Operator[]> {
     try {
       return new Promise((resolve, reject) => {
-        const results: System[] = [];
+        const results: Operator[] = [];
 
         const stream = csvParser({ separator: "," })
           .on("data", (data: object) => {
-            results.push(new System(data));
+            results.push(new Operator(data));
           })
           .on("end", () => {
             resolve(results);

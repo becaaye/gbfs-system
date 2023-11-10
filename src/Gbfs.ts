@@ -1,4 +1,15 @@
 import axios from 'axios';
+import {
+  GbfsResponse,
+  FeedLanguage,
+  Feed,
+  StationInfo,
+  StationInformationResponseObject,
+  StationStatus,
+  StationStatusResponseObject,
+  SystemInfo,
+  SystemInfoResponseObject,
+} from "./types.js";
 
 /**
  * Gbfs class provides methods to interact with a GBFS (General Bikeshare Feed Specification) compliant system.

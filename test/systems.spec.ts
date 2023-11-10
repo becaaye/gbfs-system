@@ -1,5 +1,5 @@
-import { Systems } from "../src/systems/Systems";
-import { System } from "../src/systems/System";
+import { Systems } from "../src/Systems";
+import { Operator } from "../src/Operator";
 
 describe("Systems class", () => {
   let globalSystems: Systems;
@@ -26,8 +26,8 @@ describe("Systems class", () => {
   });
 
   it("Systems objects should have the right properties", () => {
-    globalSystems.getAllSystems.forEach(system => 
-        expect(system).toMatchObject<System>({
+    globalSystems.getAllSystems.forEach(operator => 
+        expect(operator).toMatchObject<Operator>({
             countryCode: expect.any(String),
             name: expect.any(String),
             location: expect.any(String),
@@ -62,7 +62,7 @@ describe("Systems class", () => {
   if (systemMock.systemID) {
     it("should find the right system with its system ID", () => {
       const foundSystem = globalSystems.findBySystemID(systemMock.systemID);
-      expect(foundSystem).toBeInstanceOf(System);
+      expect(foundSystem).toBeInstanceOf(Operator);
       expect(foundSystem.systemID).toBe(systemMock.systemID);
     });
   }

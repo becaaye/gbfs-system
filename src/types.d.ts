@@ -1,39 +1,49 @@
-interface GbfsResponse {
+
+export type IOperator = {
+  countryCode: string;
+  name?: string;
+  location: string;
+  systemID: string;
+  url?: string;
+  autoDiscoveryURL: string;
+  validationReport?: string;
+}
+export type GbfsResponse = {
   last_updated?: number;
   ttl?: number;
   data: FeedLanguage;
 }
 
-interface FeedLanguage {
+export type FeedLanguage = {
   [language: string]: Feeds;
 }
 
-interface Feeds {
+export type Feeds = {
   feeds: Feed[];
 }
 
-interface Feed {
+export type Feed = {
   name: string;
   url: string;
 }
 
-interface StationInformationResponseObject {
+export type StationInformationResponseObject = {
   data: {
     stations: StationInfo[];
   };
 }
 
-interface StationStatusResponseObject {
+export type StationStatusResponseObject = {
   data: {
     stations: StationStatus[];
   };
 }
 
-interface SystemInfoResponseObject {
+export type SystemInfoResponseObject = {
   data: SystemInfo;
 }
 
-interface StationStatus {
+export type StationStatus = {
   station_id: string;
   num_vehicles_available?: number;
   vehicle_types_available?: any;
@@ -47,7 +57,7 @@ interface StationStatus {
   last_reported: number;
 }
 
-interface StationInfo {
+export type StationInfo = {
   station_id: string;
   name?: string;
   short_name?: string;
@@ -76,7 +86,7 @@ interface StationInfo {
   };
 }
 
-interface SystemInfo {
+export type SystemInfo = {
   system_id: string;
   language?: string;
   name?: string;

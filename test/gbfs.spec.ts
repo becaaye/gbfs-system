@@ -1,4 +1,4 @@
-import { Gbfs } from '../src/gbfs/Gbfs';
+import { Gbfs } from '../src/Gbfs';
 
 describe('Gbfs class', () => {
   let gbfs: Gbfs;

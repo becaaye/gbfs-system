@@ -1,5 +1,5 @@
-import { Gbfs } from "../src/gbfs/Gbfs";
-import { Systems } from "../src/systems/Systems";
+import { Gbfs } from "../src/Gbfs";
+import { Systems } from "../src/Systems";
 
 describe("testing interoperability between Gbfs and Systems modules", () => {
   const systemID = "bike_share_toronto";
