@@ -8,7 +8,7 @@ node_modules/
 
 .gitignore
 jest.config.cjs
-pack
+packing-script
 
 *.log
 *.map

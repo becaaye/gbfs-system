@@ -1,14 +1,14 @@
 import csvParser from "csv-parser";
-import { Operator } from "./Operator.js";
+import { CsvRow, ISystem } from "types.js";
 
 /**
  * Finds nearby bike systems in a given city based on the client's location.
  */
 export class Systems {
   public static GBFS_SYSTEM_CSV_URL = "https://raw.githubusercontent.com/MobilityData/gbfs/master/systems.csv";
-  private globalSystems: Operator[];
+  private globalSystems: ISystem[];
 
-  private constructor(global: Operator[]) {
+  private constructor(global: ISystem[]) {
     this.globalSystems = global;
   }
 
@@ -29,7 +29,7 @@ export class Systems {
     }
   }
 
-  public get getAllSystems(): Operator[]{
+  public get getAllSystems(): ISystem[]{
     return this.globalSystems;
   }
 
@@ -39,14 +39,14 @@ export class Systems {
    * @param location - The city name to look for. exp : 'Paris'
    * @returns An array of found Systems in that location
    */
-  public findByLocation(location: string): Operator[] {
-    let foundSystems: Operator[] = [];
+  public findByLocation(location: string): ISystem[] {
+    let foundSystems: ISystem[] = [];
     try {
       if (location) {
         location = this.normalizeString(location);
 
         // Search for systems with the given location (city)
-        foundSystems = this.globalSystems.filter((operator: Operator) =>
+        foundSystems = this.globalSystems.filter((operator: ISystem) =>
           this.normalizeString(operator.location).includes(location)
         );
       }
@@ -63,15 +63,15 @@ export class Systems {
    * @param countryCode - The country code to look for. exp: 'CA'
    * @returns An array of found Systems in that country
    */
-  public findByCountryCode(countryCode: string): Operator[] {
-    let foundSystems: Operator[] = [];
+  public findByCountryCode(countryCode: string): ISystem[] {
+    let foundSystems: ISystem[] = [];
     try {
       if (countryCode) {
         countryCode = this.normalizeString(countryCode);
 
         // Search for systems with the given countryCode
         foundSystems = this.globalSystems.filter(
-          (operator: Operator) =>
+          (operator: ISystem) =>
             this.normalizeString(operator.countryCode) === countryCode
         );
       }
@@ -88,14 +88,14 @@ export class Systems {
    * @param systemID - The systemID parameter to look for. exp: 'Bixi_MTL'
    * @returns a System object
    */
-  public findBySystemID(systemID: string): Operator {
-    let found: Operator[] = [];
+  public findBySystemID(systemID: string): ISystem {
+    let found: ISystem[] = [];
     try {
       if (systemID) {
         systemID = this.normalizeString(systemID);
 
         found = this.globalSystems.filter(
-          (operator: Operator) => this.normalizeString(operator.systemID) === systemID
+          (operator: ISystem) => this.normalizeString(operator.systemID) === systemID
         );
       }
     } catch (error) {
@@ -117,15 +117,15 @@ export class Systems {
    * @param name - A name to look for. exp : 'Paris'
    * @returns An array of found Systems having that name
    */
-  public findByName(name: string): Operator[] {
-    let foundSystems: Operator[] = [];
+  public findByName(name: string): ISystem[] {
+    let foundSystems: ISystem[] = [];
     try {
       if (name) {
         name = this.normalizeString(name);
 
         // Search for systems with the given name (city)
-        foundSystems = this.globalSystems.filter((system: Operator) =>
-          this.normalizeString(system.name).includes(name)
+        foundSystems = this.globalSystems.filter((operator: ISystem) =>
+          this.normalizeString(operator.name).includes(name)
         );
       }
     } catch (error) {
@@ -139,21 +139,32 @@ export class Systems {
    * Converts CSV data to JSON.
    *
    * @param csvData - The CSV data to convert.
-   * @returns A promise that resolves to an array of System object (Operator[]) representing CSV data.
+   * @returns A promise that resolves to an array of System object (ISystem[]) representing CSV data.
    */
-  private static async convertCSVtoObjects(csvData: string): Promise<Operator[]> {
+  private static async convertCSVtoObjects(csvData: string): Promise<ISystem[]> {
     try {
       return new Promise((resolve, reject) => {
-        const results: Operator[] = [];
+        const results: ISystem[] = [];
 
         const stream = csvParser({ separator: "," })
-          .on("data", (data: object) => {
-            results.push(new Operator(data));
+          .on("data", (data: CsvRow) => {
+
+            const registeredOperator: ISystem = {
+              countryCode: data["Country Code"],
+              name: data["Name"],
+              location: data["Location"],
+              systemID: data["System ID"],
+              url: data["URL"],
+              autoDiscoveryURL: data["Auto-Discovery URL"],
+              validationReport: data["Validation Report"]
+            };
+
+            results.push(registeredOperator);
           })
           .on("end", () => {
             resolve(results);
           })
-          .on("error", (error: any) => {
+          .on("error", (error: unknown) => {
             reject(error);
           });
 

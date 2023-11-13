@@ -1,8 +1,8 @@
 import { Gbfs } from "./Gbfs.js";
 import { Systems } from "./Systems.js";
-
 import {
-  IOperator,
+  ISystem,
+  CsvRow,
   GbfsResponse,
   FeedLanguage,
   Feed,
@@ -15,7 +15,8 @@ import {
 } from "./types.js";
 
 export type {
-  IOperator,
+  ISystem,
+  CsvRow,
   GbfsResponse,
   FeedLanguage,
   Feed,
@@ -26,7 +27,6 @@ export type {
   SystemInfo,
   SystemInfoResponseObject,
 };
-
 export {
     Gbfs,
     Systems

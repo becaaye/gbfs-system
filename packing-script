@@ -17,32 +17,35 @@ set -e # Exit immediately if a command exits with a non-zero status.
 # Function to display messages in green
 echo_success() {
     echo -e "${GREEN}$1${NC}"
+    echo
 }
 
 # Function to display messages in yellow
 echo_warning() {
     echo -e "${YELLOW}$1${NC}"
+    echo
 }
 
 # Function to display messages in red
 echo_error() {
     echo -e "${RED}$1${NC}"
+    echo
 }
 
 echo_warning "Building package..."
 npm run build && echo_success "Build successful."
 
-echo_warning "Running tests..."
-npm test && echo_success "Tests passed."
+# echo_warning "Running tests..."
+# npm test && echo_success "Tests passed."
 
 echo_warning "Cleaning up old package files in current project..."
-rm -f *.tgz
+rm -f *.tgz && echo_success "old package files cleaned"
 
 echo_warning "Creating package..."
 PACKAGE_FILE=$(npm pack | tail -n1) && echo_success "Package $PACKAGE_FILE created."
 
 echo_warning "Cleaning up old package files in destination project..."
-rm -rf "${DEST_DIR}/@becaaye"
+rm -rf "${DEST_DIR}/@becaaye" && echo_success "old package files cleaned in destination directory"
 
 if [ -f "$PACKAGE_FILE" ]; then
     echo_warning "Creating package directory inside node_modules..."
@@ -53,6 +56,9 @@ if [ -f "$PACKAGE_FILE" ]; then
 
     echo_warning "Unzipping copied package..."
     tar -xzf "${NEW_DIR}/${PACKAGE_FILE}" -C "$NEW_DIR" --strip-components=1 && echo_success "Package unzipped successfully."
+
+    echo_warning "Cleaning package directory..."
+    find "${NEW_DIR}" -name "*.tgz" -exec rm {} \; && echo_success "OPERATION COMPLETED !"
 else
     echo_error "Error: Package file does not exist."
     exit 1

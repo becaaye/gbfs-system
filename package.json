@@ -8,15 +8,15 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "default": "./dist/index.js"
     }
   },
 
   "scripts": {
     "clean": "rimraf dist/",
-    "include" : "cp package.json src/types.d.ts dist/",
+    "include" : "cp src/types.d.ts dist/",
     "build": "npm run clean && tsc && npm run include",
     "test": "jest",
     "prepublishOnly": "npm test && npm run build",

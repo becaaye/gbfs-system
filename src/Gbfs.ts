@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   GbfsResponse,
   FeedLanguage,
@@ -90,7 +90,7 @@ export class Gbfs {
     if (this.gbfsData && this.gbfsSupportedLanguages) return;
     try {
       const { data } = await axios.get<GbfsResponse>(this.autoDiscoveryURL, {
-        timeout: 5000,
+        timeout: 15000,
       });
       this.gbfsData = data.data;
       this.gbfsSupportedLanguages = Object.keys(this.gbfsData);
@@ -106,23 +106,27 @@ export class Gbfs {
    * @returns The URL of the specified feed, or undefined if not found.
    */
   private async findFeedUrl(feedName: string): Promise<string | undefined> {
-    await this.ensureInitialized();
-    if (
-      this.preferredLanguage &&
-      !this.gbfsSupportedLanguages!.includes(this.preferredLanguage)
-    ) {
-      throw new Error(
-        `The specified feed language '${
-          this.preferredLanguage
-        }' doesn't exist in that gbfs system. The available languages are : ${this.gbfsSupportedLanguages!.join(
-          ', '
-        )}`
-      );
+    try {
+      await this.ensureInitialized();
+      if (
+        this.preferredLanguage &&
+        !this.gbfsSupportedLanguages!.includes(this.preferredLanguage)
+      ) {
+        throw new Error(
+          `The specified feed language '${
+            this.preferredLanguage
+          }' doesn't exist in that gbfs system. The available languages are : ${this.gbfsSupportedLanguages!.join(
+            ", "
+          )}`
+        );
+      }
+      const feeds = this.preferredLanguage
+        ? this.gbfsData![this.preferredLanguage].feeds
+        : Object.values(this.gbfsData!)[0].feeds;
+      return feeds?.find((feed: Feed) => feed.name === feedName)?.url;
+    } catch (error) {
+      throw error;
     }
-    const feeds = this.preferredLanguage
-      ? this.gbfsData![this.preferredLanguage].feeds
-      : Object.values(this.gbfsData!)[0].feeds;
-    return feeds?.find((feed: Feed) => feed.name === feedName)?.url;
   }
 
   /**
@@ -131,9 +135,9 @@ export class Gbfs {
    * @param url - The URL to fetch data from.
    * @returns The data fetched from the specified URL.
    */
-  private async fetchData(url: string): Promise<any> {
+  private async fetchData(url: string): Promise<unknown> {
     try {
-      const { data } = await axios.get(url, { timeout: 5000 });
+      const { data } = await axios.get(url, { timeout: 15000 });
       return data;
     } catch (error) {
       throw new Error(`Failed to retrieve data from ${url}: ${error}`);
@@ -146,7 +150,7 @@ export class Gbfs {
    * @param feedName - The name of the feed to get data for.
    * @returns The data for the specified feed.
    */
-  private async getFeedData(feedName: string): Promise<any> {
+  private async getFeedData(feedName: string): Promise<unknown> {
     const feedURL = await this.findFeedUrl(feedName);
     return this.fetchData(feedURL!);
   }
@@ -158,15 +162,25 @@ export class Gbfs {
    * @returns An array of station information objects, or a single station information object if a stationId is provided.
    */
   async stationInfo(stationId?: string): Promise<StationInfo[] | StationInfo> {
-    const {
-      data: { stations },
-    } = (await this.getFeedData(
-      'station_information'
-    )) as StationInformationResponseObject;
-    return stationId
-      ? stations.find((station) => station.station_id === stationId) ||
-          Promise.reject(`Station with ID ${stationId} not found.`)
-      : stations;
+    try {
+      const {
+        data: { stations },
+      } = (await this.getFeedData(
+        "station_information"
+      )) as StationInformationResponseObject;
+      if (stationId) {
+        const station = stations.find(
+          (station) => station.station_id === stationId
+        );
+        if (!station) {
+          throw new Error(`Station with ID ${stationId} not found.`);
+        }
+        return station;
+      }
+      return stations;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -178,15 +192,25 @@ export class Gbfs {
   async stationStatus(
     stationId?: string
   ): Promise<StationStatus[] | StationStatus> {
-    const {
-      data: { stations },
-    } = (await this.getFeedData(
-      'station_status'
-    )) as StationStatusResponseObject;
-    return stationId
-      ? stations.find((station) => station.station_id === stationId) ||
-          Promise.reject(`Station with ID ${stationId} not found.`)
-      : stations;
+    try {
+      const {
+        data: { stations },
+      } = (await this.getFeedData(
+        "station_status"
+      )) as StationStatusResponseObject;
+      if (stationId) {
+        const station = stations.find(
+          (station) => station.station_id === stationId
+        );
+        if (!station) {
+          throw new Error(`Station with ID ${stationId} not found.`);
+        }
+        return station;
+      }
+      return stations;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -195,11 +219,15 @@ export class Gbfs {
    * @returns An object containing general information about the bike share system.
    */
   async systemInfo(): Promise<SystemInfo> {
-    const { data } = (await this.getFeedData(
-      'system_information'
-    )) as SystemInfoResponseObject;
-    if (!data.system_id)
-      throw new Error('Unable to retrieve the system informations');
-    return data;
+    try {
+      const { data } = (await this.getFeedData(
+        "system_information"
+      )) as SystemInfoResponseObject;
+      if (!data.system_id)
+        throw new Error("Unable to retrieve the system informations");
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 }

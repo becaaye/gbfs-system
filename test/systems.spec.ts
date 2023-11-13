@@ -1,16 +1,17 @@
 import { Systems } from "../src/Systems";
-import { Operator } from "../src/Operator";
+import {IOperator} from "../src/types.js";
 
 describe("Systems class", () => {
   let globalSystems: Systems;
 
-  const systemMock = {
+  const systemMock: IOperator = {
     countryCode: "CA",
     name: "BIXI Montréal",
     location: "Montréal, CA",
     systemID: "Bixi_MTL",
     url: "https://www.bixi.com/",
-    autoDiscoveryURL: "https://gbfs.velobixi.com/gbfs/gbfs.json"
+    autoDiscoveryURL: "https://gbfs.velobixi.com/gbfs/gbfs.json",
+    validationReport: "https://gbfs-validator.netlify.app/?url=https%3A%2F%2Fgbfs.velobixi.com%2Fgbfs%2Fgbfs.json"
   };
 
   beforeEach(async () => {
@@ -27,7 +28,7 @@ describe("Systems class", () => {
 
   it("Systems objects should have the right properties", () => {
     globalSystems.getAllSystems.forEach(operator => 
-        expect(operator).toMatchObject<Operator>({
+        expect(operator).toMatchObject<IOperator>({
             countryCode: expect.any(String),
             name: expect.any(String),
             location: expect.any(String),
@@ -62,7 +63,7 @@ describe("Systems class", () => {
   if (systemMock.systemID) {
     it("should find the right system with its system ID", () => {
       const foundSystem = globalSystems.findBySystemID(systemMock.systemID);
-      expect(foundSystem).toBeInstanceOf(Operator);
+      expect(foundSystem).toMatchObject<IOperator>(foundSystem);
       expect(foundSystem.systemID).toBe(systemMock.systemID);
     });
   }

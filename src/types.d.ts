@@ -1,13 +1,24 @@
 
-export type IOperator = {
+export type ISystem = {
   countryCode: string;
-  name?: string;
+  name: string;
   location: string;
   systemID: string;
-  url?: string;
+  url: string;
   autoDiscoveryURL: string;
-  validationReport?: string;
+  validationReport: string;
 }
+
+export type CsvRow = {
+  'Country Code': string;
+  'Name': string;
+  'Location': string;
+  'System ID': string;
+  'URL': string;
+  'Auto-Discovery URL': string;
+  'Validation Report': string;
+};
+
 export type GbfsResponse = {
   last_updated?: number;
   ttl?: number;
