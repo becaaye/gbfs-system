@@ -12,47 +12,54 @@ import {
 } from "./types.js";
 
 /**
- * Gbfs class provides methods to interact with a GBFS (General Bikeshare Feed Specification) compliant system.
+ * Get realtime feed data for a given GBFS (General Bikeshare Feed Specification) compliant system.
+ * The feed must be already provided by the operator. exp : station_information, station_status, system_info, etc.
+ * Visit MobiltyData website or github repo for more informations : https://github.com/MobilityData/gbfs
  */
 export class Gbfs {
   private autoDiscoveryURL: string;
-  private preferredLanguage: string | undefined;
+  private preferredFeedLanguage: string | undefined;
   private gbfsData: FeedLanguage | undefined;
   private gbfsSupportedLanguages: string[] | undefined;
 
   /**
-   * Constructor for the Gbfs class.
-   *
+   * Instanciate the Gbfs class.
    * @param autoDiscoveryURL - The URL of the GBFS auto-discovery endpoint.
-   * @param preferredLanguage - (Optional) The preferred language code for fetching GBFS data.
+   * @param preferredFeedLanguage - (Optional) The preferred language code for fetching GBFS data.
+   * @returns A new instance of the Gbfs class.
    */
-  private constructor(autoDiscoveryURL: string, preferredLanguage?: string) {
+  private constructor(
+    autoDiscoveryURL: string,
+    preferredFeedLanguage?: string
+  ) {
     this.autoDiscoveryURL = autoDiscoveryURL;
-    this.preferredLanguage = preferredLanguage;
+    this.preferredFeedLanguage = preferredFeedLanguage;
   }
 
   /**
-   * Factory method to create an instance of Gbfs and initialise the feed URLs
-   *
-   * @param autoDiscoveryURL - The URL of the GBFS auto-discovery endpoint.
-   * @param preferredLanguage - (Optional) The preferred language code for fetching GBFS data.
+   * Create an instance of Gbfs and retrieve all found feeds URLs
+   * @param {string} autoDiscoveryURL - The URL of the GBFS system.
+   * That URL can be found in the operator API documentation, or by checking the MobilityData maintained system.csv.
+   * The {Systems} module of this library also provide a way to get the autoDiscoveryURL for a registered operator.
+   * @param {string} preferredFeedLanguage - (Optional) The language code you want to get the feeds data from.
+   * Some operators provide their gbfs system in multiple languages depending on their public's needs.
+   * @
    */
   static async create(
     autoDiscoveryURL: string,
-    preferredLanguage?: string
+    preferredFeedLanguage?: string
   ): Promise<Gbfs> {
-    const instance = new Gbfs(autoDiscoveryURL, preferredLanguage);
+    const instance = new Gbfs(autoDiscoveryURL, preferredFeedLanguage);
     await instance.ensureInitialized();
     return instance;
   }
 
   /**
-   * Setter for the preferred feed language.
-   *
-   * @param language - The language code to set as the preferred language.
+   * Get the current defined preferred feed language.
+   * @param language - The language code to set as the preferred feed language.
    */
-  public set setPreferredFeedLanguage(language: string | undefined) {
-    this.preferredLanguage = language;
+  public set setPreferredFeedLanguage(language: string) {
+    this.preferredFeedLanguage = language;
   }
 
   /**
@@ -61,37 +68,34 @@ export class Gbfs {
    * @returns The currently set preferred language code.
    */
   public get getPreferredFeedLanguage(): string | undefined {
-    return this.preferredLanguage;
+    return this.preferredFeedLanguage;
   }
 
   /**
-   * Getter for the supported languages array.
-   *
-   * @returns The currently supported languages codes.
+   * Get all supported feed languages.
+   * @returns An array of all feeds languages found for the current gbfs system. // ['en', 'fr']
    */
   public getSupportedLanguages(): string[] | undefined {
     return this.gbfsSupportedLanguages;
   }
 
   /**
-   * Checks if a language is supported by the GBFS system.
-   *
-   * @param language - The language code to check for support.
-   * @returns True if the language is supported, false otherwise.
+   * Checks if a given language is supported by the GBFS system.
+   * @param language - The language code to check for support. exp: 'en'
+   * @returns True if the language is supported.
    */
   public isLanguageSupported(language: string): boolean {
     return this.gbfsSupportedLanguages?.includes(language) ?? false;
   }
 
   /**
-   * Ensures the GBFS data is initialized by fetching data from the auto-discovery endpoint.
+   * Ensures the GBFS data is properly initialized and all required data stored.
+   * @returns {void}
    */
   private async ensureInitialized(): Promise<void> {
     if (this.gbfsData && this.gbfsSupportedLanguages) return;
     try {
-      const { data } = await axios.get<GbfsResponse>(this.autoDiscoveryURL, {
-        timeout: 15000,
-      });
+      const { data } = await axios.get<GbfsResponse>(this.autoDiscoveryURL, {headers:{'Content-Type': 'application/json'}});
       this.gbfsData = data.data;
       this.gbfsSupportedLanguages = Object.keys(this.gbfsData);
     } catch (error) {
@@ -101,27 +105,27 @@ export class Gbfs {
 
   /**
    * Finds the URL of a specific feed.
-   *
-   * @param feedName - The name of the feed to find the URL for.
-   * @returns The URL of the specified feed, or undefined if not found.
+   * @param {string} feedName - The name of the feed to find the URL for.
+   * @returns The URL of the specified feed or undefined if not found.
+   * If there's no defined preferred feed language, it uses the first found feed object to process.
    */
   private async findFeedUrl(feedName: string): Promise<string | undefined> {
     try {
       await this.ensureInitialized();
       if (
-        this.preferredLanguage &&
-        !this.gbfsSupportedLanguages!.includes(this.preferredLanguage)
+        this.preferredFeedLanguage &&
+        !this.gbfsSupportedLanguages!.includes(this.preferredFeedLanguage)
       ) {
         throw new Error(
           `The specified feed language '${
-            this.preferredLanguage
+            this.preferredFeedLanguage
           }' doesn't exist in that gbfs system. The available languages are : ${this.gbfsSupportedLanguages!.join(
             ", "
           )}`
         );
       }
-      const feeds = this.preferredLanguage
-        ? this.gbfsData![this.preferredLanguage].feeds
+      const feeds = this.preferredFeedLanguage
+        ? this.gbfsData![this.preferredFeedLanguage].feeds
         : Object.values(this.gbfsData!)[0].feeds;
       return feeds?.find((feed: Feed) => feed.name === feedName)?.url;
     } catch (error) {
@@ -131,13 +135,12 @@ export class Gbfs {
 
   /**
    * Fetches data from a specified URL.
-   *
-   * @param url - The URL to fetch data from.
-   * @returns The data fetched from the specified URL.
+   * @param {string} url - The URL to fetch data from.
+   * @returns {Promise<unknown>} The data fetched from the specified URL.
    */
   private async fetchData(url: string): Promise<unknown> {
     try {
-      const { data } = await axios.get(url, { timeout: 15000 });
+      const { data } = await axios.get<unknown>(url, {headers:{'Content-Type': 'application/json'}});
       return data;
     } catch (error) {
       throw new Error(`Failed to retrieve data from ${url}: ${error}`);
@@ -146,9 +149,8 @@ export class Gbfs {
 
   /**
    * Gets data for a specified feed.
-   *
-   * @param feedName - The name of the feed to get data for.
-   * @returns The data for the specified feed.
+   * @param {string} feedName - The name of the feed to get data for.
+   * @returns {Promise<unknown>} The data for the specified feed.
    */
   private async getFeedData(feedName: string): Promise<unknown> {
     const feedURL = await this.findFeedUrl(feedName);
@@ -156,9 +158,8 @@ export class Gbfs {
   }
 
   /**
-   * Fetches station information.
-   *
-   * @param stationId - (Optional) The ID of a specific station to fetch information for.
+   * Fetches station_information feed realtime data.
+   * @param {string} stationId - (Optional) The ID of a specific station to fetch data for.
    * @returns An array of station information objects, or a single station information object if a stationId is provided.
    */
   async stationInfo(stationId?: string): Promise<StationInfo[] | StationInfo> {
@@ -184,8 +185,7 @@ export class Gbfs {
   }
 
   /**
-   * Fetches station status.
-   *
+   * Fetches station_status feed realtime data.
    * @param stationId - (Optional) The ID of a specific station to fetch status for.
    * @returns An array of station status objects, or a single station status object if a stationId is provided.
    */
@@ -214,9 +214,8 @@ export class Gbfs {
   }
 
   /**
-   * Fetches the general system information.
-   *
-   * @returns An object containing general information about the bike share system.
+   * Fetches system_information feed data.
+   * @returns the system_information feed data as an object.
    */
   async systemInfo(): Promise<SystemInfo> {
     try {

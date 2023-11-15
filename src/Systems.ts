@@ -1,42 +1,52 @@
+import axios from "axios";
 import csvParser from "csv-parser";
 import { CsvRow, ISystem } from "types.js";
 
 /**
- * Finds nearby bike systems in a given city based on the client's location.
+ * Get all registered gbfs systems and perform search using a known location, name, system Id or country code.
  */
 export class Systems {
-  public static GBFS_SYSTEM_CSV_URL = "https://raw.githubusercontent.com/MobilityData/gbfs/master/systems.csv";
+  public static GBFS_SYSTEM_CSV_URL =
+    "https://raw.githubusercontent.com/MobilityData/gbfs/master/systems.csv";
   private globalSystems: ISystem[];
 
   private constructor(global: ISystem[]) {
     this.globalSystems = global;
   }
 
+  /**
+   * Fetch all registered systems and instanciate the Systems class
+   * @returns {Systems} A new instance of the Systems class
+   */
   public static async initialize(): Promise<Systems> {
     try {
-      // fetch global systems
-      const response = await fetch(this.GBFS_SYSTEM_CSV_URL);
-      const systemCSVRawBody = await response.text();
+      // fetch all registered systems
+      const { data } = await axios.get<string>(this.GBFS_SYSTEM_CSV_URL);
 
-      // Convert CSV data System Objects
-      const data = await this.convertCSVtoObjects(systemCSVRawBody);
-      const instance = new Systems(data);
+      // Convert CSV raw data into ISystem Objects
+      const systemCSVObjects = await this.convertCSVtoObjects(data);
+      const instance = new Systems(systemCSVObjects);
+
       return instance;
-
     } catch (error) {
       console.log(error);
       throw error;
     }
   }
 
-  public get getAllSystems(): ISystem[]{
+  /**
+   * Return all found systems in the given location (City)
+   *
+   * @returns {ISystem[]} An array of all registered systems found in the remote system.csv
+   */
+  public get getAllSystems(): ISystem[] {
     return this.globalSystems;
   }
 
   /**
    * Return all found systems in the given location (City)
    *
-   * @param location - The city name to look for. exp : 'Paris'
+   * @param {string} location - The city name to look for. exp : 'Paris'
    * @returns An array of found Systems in that location
    */
   public findByLocation(location: string): ISystem[] {
@@ -60,7 +70,7 @@ export class Systems {
   /**
    * Return all found systems having the given country code parameter
    *
-   * @param countryCode - The country code to look for. exp: 'CA'
+   * @param {string} countryCode - The country code to look for. exp: 'CA'
    * @returns An array of found Systems in that country
    */
   public findByCountryCode(countryCode: string): ISystem[] {
@@ -85,7 +95,7 @@ export class Systems {
   /**
    * Returns a system having the given system ID parameter
    *
-   * @param systemID - The systemID parameter to look for. exp: 'Bixi_MTL'
+   * @param {string} systemID - The systemID parameter to look for. exp: 'Bixi_MTL'
    * @returns a System object
    */
   public findBySystemID(systemID: string): ISystem {
@@ -95,7 +105,8 @@ export class Systems {
         systemID = this.normalizeString(systemID);
 
         found = this.globalSystems.filter(
-          (operator: ISystem) => this.normalizeString(operator.systemID) === systemID
+          (operator: ISystem) =>
+            this.normalizeString(operator.systemID) === systemID
         );
       }
     } catch (error) {
@@ -114,7 +125,7 @@ export class Systems {
   /**
    * Return all found systems having the given name
    *
-   * @param name - A name to look for. exp : 'Paris'
+   * @param {string} name - A name to look for. exp : 'Paris'
    * @returns An array of found Systems having that name
    */
   public findByName(name: string): ISystem[] {
@@ -136,19 +147,20 @@ export class Systems {
   }
 
   /**
-   * Converts CSV data to JSON.
+   * Converts CSV raw data into an array of Objects.
    *
-   * @param csvData - The CSV data to convert.
+   * @param {string} csvData - The CSV data to convert.
    * @returns A promise that resolves to an array of System object (ISystem[]) representing CSV data.
    */
-  private static async convertCSVtoObjects(csvData: string): Promise<ISystem[]> {
+  private static async convertCSVtoObjects(
+    csvData: string
+  ): Promise<ISystem[]> {
     try {
       return new Promise((resolve, reject) => {
         const results: ISystem[] = [];
 
         const stream = csvParser({ separator: "," })
           .on("data", (data: CsvRow) => {
-
             const registeredOperator: ISystem = {
               countryCode: data["Country Code"],
               name: data["Name"],
@@ -156,7 +168,7 @@ export class Systems {
               systemID: data["System ID"],
               url: data["URL"],
               autoDiscoveryURL: data["Auto-Discovery URL"],
-              validationReport: data["Validation Report"]
+              validationReport: data["Validation Report"],
             };
 
             results.push(registeredOperator);
@@ -179,7 +191,7 @@ export class Systems {
   /**
    * Normalizes a string by making it lowercase and removing accents.
    *
-   * @param input - The input string to normalize.
+   * @param {string} input - The input string to normalize.
    * @returns The normalized string.
    */
   private normalizeString(input: string): string {

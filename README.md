@@ -1,97 +1,161 @@
-# GBFS Data Fetcher
+![version](https://img.shields.io/badge/version-1.0.0-blue) ![license](https://img.shields.io/badge/license-ISC-green)
 
-![version](https://img.shields.io/badge/version-1.0.0-blue)
-![license](https://img.shields.io/badge/license-ISC-green)
+## 1. Introduction
 
-A Node.js package to seamlessly retrieve real-time data from GBFS (General Bikeshare Feed Specification) using the auto-discovery URLs provided by MobilityData. Perfect for developers aiming to leverage live bikeshare system information, station statuses, and other essential data to innovate in their applications and services.
+GBFS (General Bikeshare Feed Specification) is a standardized data feed for shared mobility system availability, such as bikes and scooters. It provides a unified format for sharing real-time information about the location, status, and availability of these systems.
 
-## Table of Contents
+## 2. Problem Statement
 
-- [GBFS Data Fetcher](#gbfs-system)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Get a System's feeds](#get-a-systems-feeds)
-    - [Single Station Data](#single-station-data)
-    - [Feed Language Management](#feed-language-management)
-  - [Compatibility](#compatibility)
-  - [API](#api)
-    - [Gbfs class](#gbfs-class)
-  - [Contributing](#contributing)
-  - [License](#license)
-  - [Support](#support)
-  - [Contact](#contact)
+The `gbfs-system` library aims to simplify the interaction with GBFS-compliant systems, providing easy access to shared mobility data like station information, system status, and more.
+`gbfs-system` is a Node.js package to seamlessly retrieve real-time data from GBFS (General Bikeshare Feed Specification) using the auto-discovery URLs provided by MobilityData. Perfect for developers aiming to leverage live bikeshare system information, station statuses, and other essential data to innovate in their applications and services.
 
-## Overview
+## 3. Installation
 
-The General Bikeshare Feed Specification (GBFS) is a standardized data feed system for shared mobility systems, allowing systems to specify real-time data about their system's operations. This utility provides an implementation of GBFS, enabling users to interact with GBFS data more effectively.
-
-Understanding and using GBFS can assist in integrating shared mobility system data into applications, maps, and other platforms, providing real-time information on bike availability, station status, and more.
-
-
-## Installation
+To install the library via npm, use the following command:
 
 ```bash
 npm install @becaaye/gbfs-system
 ```
 
-## Usage
+## 4. Usage
 
-### Get a System's feeds
+### 4.1 Systems Module
 
-```typescript
-import { Gbfs } from "@becaaye/gbfs-system";
+The `Systems` module helps in finding nearby bike systems based on a given city or location.
 
-const autoDiscoveryURL = "https://gbfs.example.com/gbfs.json"
-
-// create a new Gbfs object
-const gbfs = await Gbfs.create(autoDiscoveryURL);
-
-// Get all stations information
-gbfs.stationInfo()
-    .then((stations) => console.log(stations));
-    /* [
-        {
-            "station_id": "1",
-            "name": "Métro Champ-de-Mars ( Viger / Sanguinet )",
-            "short_name": "6001",
-            "lat": 45.51025293,
-            "lon": -73.5567766,
-            "capacity": 35,
-            ...
-        },
-        ...
-    ] */
-
-// Get all stations status
-gbfs.stationStatus()
-    .then((stations) => console.log(stations));
-    /* [
-        {
-            "station_id": "1",
-            "num_bikes_available": 16,
-            "num_ebikes_available": 3,
-            "num_docks_available": 8,
-            ...
-        },
-        ...
-        ]
-    } */
-
-
-// Get system information
-gbfs.systemInfo()
-    .then((system) => console.log(system));
-    /* {
-         "system_id": "Bixi_MTL",
-         "language": "en",
-         "name": "Bixi_MTL",
-         ...
-    } */
+```javascript
+import { Systems } from "@becaaye/gbfs-system";
+// Import the Systems module
 ```
 
-### Single Station Data
+```typescript
+// initialize the Systems class
+const SYSTEMS = await Systems.initialize();
+
+const system_data_by_location = SYSTEMS.findByLocation("dubai");
+console.log(system_data_by_location);
+/*
+[{
+  countryCode: 'AE',
+  name: 'Careem BIKE',
+  location: 'Dubai, AE',
+  systemID: 'careem_bike',
+  url: 'https://www.careem.com/en-ae/...',
+  autoDiscoveryURL: 'https://dubai.public.../gbfs.json',
+...
+}]
+*/
+
+const system_data_by_country = SYSTEMS.findByCountryCode("BR");
+console.log(system_data_by_country);
+/*
+[
+  {
+    countryCode: 'BR',
+    name: 'Bike Itaú - Rio',
+    location: 'Rio de Janeiro, BR',
+    systemID: 'bike_rio',
+    url: 'https://bikeitau.com...',
+    autoDiscoveryURL: 'https://riodejaneiro.public...gbfs.json',
+  ...
+  },
+  and 205 more...
+]
+*/
+
+const system_data_by_name = SYSTEMS.findByName("bixi");
+console.log(system_data_by_name);
+/*
+[
+  {
+  countryCode: 'CA',
+  name: 'BIXI Montréal',
+  location: 'Montréal, CA',
+  systemID: 'Bixi_MTL',
+  url: 'https://www.bixi...',
+  autoDiscoveryURL: 'https://gbfs.velo...gbfs.json'
+  }
+]
+*/
+
+const system_data_by_id = SYSTEMS.findBySystemID("dott-paris");
+console.log(system_data_by_id);
+/*
+{
+  countryCode: 'FR',
+  name: 'Dott Paris',
+  location: 'Paris,FR',
+  systemID: 'dott-paris',
+  url: 'https://ridedott...',
+  autoDiscoveryURL: 'https://gbfs.api...gbfs.json',
+  validationReport: 'https://gbfs-validator...gbfs.json'
+}
+*/
+```
+
+### 4.2 Gbfs Module
+
+The `Gbfs` module provides methods to interact with a GBFS-compliant system, such as fetching station information and system status.
+
+```javascript
+import { Gbfs } from "@becaaye/gbfs-system";
+// Import the Gbfs module
+```
+
+```typescript
+const autoDiscoveryURL = "https://gbfs.example.com/gbfs.json";
+
+// create a new Gbfs object with the auto-discovery url
+const gbfs = await Gbfs.create(autoDiscoveryURL);
+
+// Get all stations informations
+const station_info_data = await gbfs.stationInfo();
+console.log(station_info_data);
+/* 
+[
+  {
+    "station_id": "1",
+    "name": "Métro Champ-de-Mars ( Viger / Sanguinet )",
+    "short_name": "6001",
+    "lat": 45.51025293,
+    "lon": -73.5567766,
+    "capacity": 35,
+    ...
+  },
+  and 205 more...
+] 
+*/
+
+// Get all stations status
+const station_status_data = await gbfs.stationStatus();
+console.log(station_status_data);
+/* 
+[
+  {
+    "station_id": "1",
+    "num_bikes_available": 16,
+    "num_ebikes_available": 3,
+    "num_docks_available": 8,
+    ...
+  },
+  and 205 more...
+]
+*/
+
+// Get the system information
+const system_info_data = await gbfs.systemInfo();
+console.log(system_info_data);
+/* 
+{
+  "system_id": "Bixi_MTL",
+  "language": "en",
+  "name": "Bixi_MTL",
+  ...
+} 
+*/
+```
+
+#### 4.3 Get a Single Station Data
 
 For both `stationInfo()` and `stationStatus()`, retrieve data for a specific station by providing the `station_id`.
 
@@ -99,9 +163,37 @@ For both `stationInfo()` and `stationStatus()`, retrieve data for a specific sta
 gbfs.stationStatus("12").then((station) => console.log(station));
 ```
 
-### Feed Language Management
+#### 4.4 Feed Language Management
 
-To fetch data in a different language:
+Some gbfs clients can provide their feed data in multiple languages depending on their public's needs. The example below from Velobixi in Montreal is the response data of the autodiscovery url (or gbfs.json). We can see the feeds are provided in english 'en' and in french 'fr'.
+```json
+{
+  "last_updated": 1234567890,
+  "ttl": 10,
+  "data": {
+    "en": {
+      "feeds": [
+        {
+        "name": "station_status",
+        "url": "https://gbfs.velobixi.../en/station_status.json"
+        },
+        ...
+      ]
+    },
+    "fr": {
+      "feeds": [
+        {
+        "name": "station_status",
+        "url": "https://gbfs.velobixi.../fr/station_status.json"
+        },
+        ...
+      ]
+    }
+  }
+}
+```
+
+You can fetch data in a different language with one of these 2 options:
 
 ```typescript
 // Change language for an existing object
@@ -118,39 +210,48 @@ gbfs.getSupportedLanguages(); // ['en', 'fr']
 gbfs.isLanguageSupported("fr"); // true
 ```
 
+> If no prefered feed language is defined, The first found feed language is used to retrieve data.
+
+## API Reference
+
+### Systems Module
+
+| Method              | Description                   | Parameters            | Returns          |
+| ------------------- | ----------------------------- | --------------------- | ---------------- |
+| `findByLocation`    | Finds systems in a given city | `location: string`    | `Array<ISystem>` |
+| `findByCountryCode` | Finds systems by country code | `countryCode: string` | `Array<ISystem>` |
+| `findBySystemID`    | Finds a system by its ID      | `systemID: string`    | `ISystem`        |
+| `findByName`        | Finds systems by name         | `name: string`        | `Array<ISystem>` |
+
+### GBFS Module
+
+| Method          | Description                        | Parameters           | Returns                              |
+| --------------- | ---------------------------------- | -------------------- | ------------------------------------ |
+| `stationInfo`   | Fetches station information        | `stationId?: string` | `Array<StationInfo>` or `StationInfo`     |
+| `stationStatus` | Fetches station status             | `stationId?: string` | `Array<StationStatus>` or `StationStatus` |
+| `systemInfo`    | Fetches general system information | -                    | `SystemInfo`                         |
+
+> More methods will be added to support data retreival from other feeds.
+
 ## Compatibility
 
-The current package is designed for ESModules. Future versions aim to include compatibility with CommonJS.
+The current package is designed for ESModules, so you can use the module you want with the import statement. Future versions aim to include compatibility with CommonJS. As for now, you can import the modules as mentioned above.
 
-## API
+You might also consider the fact that some operators may have in place several security neasures on their API servers such as IP whitelisting, rate limits, etc that may sometimes impact the outcome of some requests and may throw errors like this :
 
-### Gbfs class
-
-| Method                      | Description                                                                                       | Parameters                                              | Returns                                            |
-|-----------------------------|---------------------------------------------------------------------------------------------------|---------------------------------------------------------|-----------------------------------------------------|
-| create                      | Creates a new Gbfs object and initializes it with the autoDiscovery URL and an optional preferred language. | `autoDiscoveryURL: string`, `preferredLanguage?: string` | `Gbfs`                                              |
-| setPreferredFeedLanguage    | Setter for the preferred feed language.                                                           | `language: string`                                      | `void`                                             |
-| getPreferredFeedLanguage    | Getter for the preferred feed language.                                                           | None                                                    | `string`                                           |
-| isLanguageSupported         | Checks if a language is supported by the GBFS system.                                             | `language: string`                                      | `boolean`                                          |
-| getSupportedLanguages       | Getter for the supported languages array.                                                         | None                                                    | `string[]`                                         |
-| stationInfo                 | Fetches station information.                                                                      | `stationId?: string`                                    | `Promise<StationInfo[] \| StationInfo>`            |
-| stationStatus               | Fetches station status.                                                                           | `stationId?: string`                                    | `Promise<StationStatus[] \| StationStatus>`        |
-| systemInfo                  | Fetches the general system information.                                                           | None                                                    | `Promise<SystemInfo>`                              |
-
+```bash
+Error: Failed to retrieve data from https://gbfs.example.com/system_information.json: AxiosError: Request failed with status code 403
+```
 
 ## Contributing
 
-We welcome contributions! Please see issues or pull requests on [GitHub](https://github.com/becaaye/gbfs-system).
+Contributions to the `gbfs-system` library are welcome. Please fork the project, create a new branche from `main` and name it like this : `feature/your-awesome-feature`. Once you done, push on the remote repository and create a pull-request.
+For bugs and feature requests, please use the [issues section on GitHub](https://github.com/becaaye/gbfs-system/issues).
 
 ## License
 
-Licensed under the ISC license. See the [LICENSE file](https://github.com/becaaye/gbfs-system/blob/main/LICENSE) for details.
-
-## Support
-
-For bugs and feature requests, please use the [issues section on GitHub](https://github.com/becaaye/gbfs-system/issues).
+This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-- **Becaye Badiane**
-- [GitHub](https://github.com/becaaye)
+For any queries or contributions, please contact at becaye00@gmail.com
