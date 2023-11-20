@@ -19,5 +19,6 @@ jobs:
           node-version: 16
       - runs: npm ci
       - runs: npm run build
+      - runs: npm run semantic-release
       - runs: rm -rf node_modules
       - uses: ./dist 
