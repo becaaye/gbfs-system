@@ -1,6 +1,6 @@
 {
   "name": "@becaaye/gbfs-system",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "A Node.js package that enables real-time data retrieval from GBFS (General Bikeshare Feed Specification) using the auto-discovery URLs provided by MobilityData. It allows developers to easily access and utilize live bikeshare system information, station information, station status, etc, and other valuable data for building innovative applications and services.",
   "type": "module",
   "main": "dist/index.js",
@@ -20,11 +20,12 @@
     "test": "jest",
     "prepublishOnly": "npm test && npm run build",
     "debug": "npm run build && node --inspect-brk=9229 ./dist/index.js",
-    "test-debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand"
+    "test-debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/becaaye/gbfs-system.git"
+    "url": "https://github.com/becaaye/gbfs-system.git"
   },
   "keywords": [
     "gbfs",
