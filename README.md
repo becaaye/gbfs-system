@@ -1,5 +1,4 @@
-[![Build](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=build)](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml))
-[![Test](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=test)](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml))
+[![Build and Test](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push)](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml)
 ![license](https://img.shields.io/badge/license-ISC-green)
 
 ## 1. Introduction
