@@ -28,7 +28,7 @@ jobs:
       - run: npm test
 
   release:
-    needs: test
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -44,4 +44,4 @@ jobs:
       - run: npm run semantic-release
       - run: rm -rf node_modules
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
