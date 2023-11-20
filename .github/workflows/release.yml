@@ -21,4 +21,3 @@ jobs:
       - run: npm run build
       - run: npm run semantic-release
       - run: rm -rf node_modules
-      - uses: ./dist 
