@@ -1,4 +1,4 @@
-![Release Workflow Status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg)
+![Build status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg)
 ![license](https://img.shields.io/badge/license-ISC-green)
 
 ## 1. Introduction
