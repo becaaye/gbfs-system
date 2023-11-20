@@ -45,7 +45,7 @@ export class Gbfs {
    * Some operators provide their gbfs system in multiple languages depending on their public's needs.
    * @
    */
-  static async create(
+  static async initialize(
     autoDiscoveryURL: string,
     preferredFeedLanguage?: string
   ): Promise<Gbfs> {

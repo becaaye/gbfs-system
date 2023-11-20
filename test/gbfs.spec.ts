@@ -7,7 +7,7 @@ describe('Gbfs class', () => {
   const stationId = '514';
 
   beforeEach(async () => {
-    gbfs = await Gbfs.create(autoDiscoveryURL);
+    gbfs = await Gbfs.initialize(autoDiscoveryURL);
   });
 
   afterEach(() => {
