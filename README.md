@@ -1,5 +1,4 @@
-[![Build](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=build)](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml))
-[![Test](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=test)](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml))
+[![Build and Test](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push)](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml)
 ![license](https://img.shields.io/badge/license-ISC-green)
 
 ## 1. Introduction
@@ -16,7 +15,7 @@ The `gbfs-system` library aims to simplify the interaction with GBFS-compliant s
 To install the library via npm, use the following command:
 
 ```bash
-npm install @becaaye/gbfs-system
+npm install gbfs-system
 ```
 
 ## 4. Usage
@@ -26,7 +25,7 @@ npm install @becaaye/gbfs-system
 The `Systems` module helps in finding nearby bike systems based on a given city or location.
 
 ```javascript
-import { Systems } from "@becaaye/gbfs-system";
+import { Systems } from "gbfs-system";
 // Import the Systems module
 ```
 
@@ -100,7 +99,7 @@ console.log(system_data_by_id);
 The `Gbfs` module provides methods to interact with a GBFS-compliant system, such as fetching station information and system status.
 
 ```javascript
-import { Gbfs } from "@becaaye/gbfs-system";
+import { Gbfs } from "gbfs-system";
 // Import the Gbfs module
 ```
 
