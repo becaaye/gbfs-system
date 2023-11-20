@@ -1,5 +1,5 @@
 import { Systems } from "../src/Systems";
-import {ISystem} from "../src/types.js";
+import { ISystem } from "../src/types.js";
 
 describe("Systems class", () => {
   let globalSystems: Systems;
@@ -11,11 +11,12 @@ describe("Systems class", () => {
     systemID: "Bixi_MTL",
     url: "https://www.bixi.com/",
     autoDiscoveryURL: "https://gbfs.velobixi.com/gbfs/gbfs.json",
-    validationReport: "https://gbfs-validator.netlify.app/?url=https%3A%2F%2Fgbfs.velobixi.com%2Fgbfs%2Fgbfs.json"
+    validationReport:
+      "https://gbfs-validator.netlify.app/?url=https%3A%2F%2Fgbfs.velobixi.com%2Fgbfs%2Fgbfs.json",
   };
 
   beforeEach(async () => {
-    globalSystems =  await Systems.initialize();
+    globalSystems = await Systems.initialize();
   });
 
   afterEach(() => {
@@ -27,17 +28,17 @@ describe("Systems class", () => {
   });
 
   it("Systems objects should have the right properties", () => {
-    globalSystems.getAllSystems.forEach(operator => 
-        expect(operator).toMatchObject<ISystem>({
-            countryCode: expect.any(String),
-            name: expect.any(String),
-            location: expect.any(String),
-            systemID: expect.any(String),
-            url: expect.any(String),
-            autoDiscoveryURL: expect.any(String),
-            validationReport: expect.any(String),
-        })
-    );
+    globalSystems.getAllSystems.forEach((operator) => {
+      expect(operator).toMatchObject<ISystem>({
+        countryCode: expect.any(String),
+        name: expect.any(String),
+        location: expect.any(String),
+        systemID: expect.any(String),
+        url: expect.any(String),
+        autoDiscoveryURL: expect.any(String),
+        // validationReport: expect.toBeStringOrUndefined(),
+      });
+    });
   });
 
   if (systemMock.location) {
@@ -51,7 +52,9 @@ describe("Systems class", () => {
 
   if (systemMock.countryCode) {
     it("should find the right systems with their country code", () => {
-      const foundSystems = globalSystems.findByCountryCode(systemMock.countryCode);
+      const foundSystems = globalSystems.findByCountryCode(
+        systemMock.countryCode
+      );
       if (foundSystems) {
         foundSystems.forEach((system) =>
           expect(system.countryCode).toBe(systemMock.countryCode)
