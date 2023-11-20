@@ -14,7 +14,7 @@ describe("testing interoperability between Gbfs and Systems modules", () => {
     const SYSTEMS = await Systems.initialize();
     const system = SYSTEMS.findBySystemID(systemID);
 
-    const GBFS = await Gbfs.create(system.autoDiscoveryURL);
+    const GBFS = await Gbfs.initialize(system.autoDiscoveryURL);
     const systemInfo = await GBFS.systemInfo();
 
     expect(systemInfo.language).toBe('en');

@@ -105,8 +105,8 @@ import { Gbfs } from "@becaaye/gbfs-system";
 ```typescript
 const autoDiscoveryURL = "https://gbfs.example.com/gbfs.json";
 
-// create a new Gbfs object with the auto-discovery url
-const gbfs = await Gbfs.create(autoDiscoveryURL);
+// create a new Gbfs instance with the auto-discovery url
+const gbfs = await Gbfs.initialize(autoDiscoveryURL);
 
 // Get all stations informations
 const station_info_data = await gbfs.stationInfo();
@@ -196,11 +196,11 @@ Some gbfs clients can provide their feed data in multiple languages depending on
 You can fetch data in a different language with one of these 2 options:
 
 ```typescript
-// Change language for an existing object
+// Change the feed language for the selected instance
 gbfs.setPreferredFeedLanguage = "fr";
 
 // Define language at creation
-const gbfsInFrench = await Gbfs.create(autoDiscoveryURL, "fr");
+const gbfsInFrench = await Gbfs.initialize(autoDiscoveryURL, "fr");
 ```
 
 To handle supported languages:
@@ -218,6 +218,7 @@ gbfs.isLanguageSupported("fr"); // true
 
 | Method              | Description                   | Parameters            | Returns          |
 | ------------------- | ----------------------------- | --------------------- | ---------------- |
+| `initialize`   | Static factory method that creates a new Systems instance. | - | `Systems` |
 | `findByLocation`    | Finds systems in a given city | `location: string`    | `Array<ISystem>` |
 | `findByCountryCode` | Finds systems by country code | `countryCode: string` | `Array<ISystem>` |
 | `findBySystemID`    | Finds a system by its ID      | `systemID: string`    | `ISystem`        |
@@ -227,9 +228,12 @@ gbfs.isLanguageSupported("fr"); // true
 
 | Method          | Description                        | Parameters           | Returns                              |
 | --------------- | ---------------------------------- | -------------------- | ------------------------------------ |
+| `initialize`   | Static factory method that creates a new Gbfs instance with its url. | `autoDiscvoeryURL:string` and `preferedFeedLanguage?: string` | `Gbfs` |
 | `stationInfo`   | Fetches station information        | `stationId?: string` | `Array<StationInfo>` or `StationInfo`     |
 | `stationStatus` | Fetches station status             | `stationId?: string` | `Array<StationStatus>` or `StationStatus` |
 | `systemInfo`    | Fetches general system information | -                    | `SystemInfo`                         |
+| `getSupportedLanguages`   | Returns an array of all feed language codes | - | `Array<string>`|
+| `isLanguageSupported`   | Returns true if the feed language code is supported | `language:string` | `Boolean` |
 
 > More methods will be added to support data retreival from other feeds.
 
@@ -244,14 +248,12 @@ Error: Failed to retrieve data from https://gbfs.example.com/system_information.
 ```
 
 ## Contributing
+- Contributions to the `gbfs-system` library are welcome. Please fork the project, create a new branche from `main` and name it like this : `feature/your-awesome-feature`. Once you done, push on the remote repository and create a pull-request.
 
-Contributions to the `gbfs-system` library are welcome. Please fork the project, create a new branche from `main` and name it like this : `feature/your-awesome-feature`. Once you done, push on the remote repository and create a pull-request.
-For bugs and feature requests, please use the [issues section on GitHub](https://github.com/becaaye/gbfs-system/issues).
+- For bugs and feature requests, please use the [issues section on GitHub](https://github.com/becaaye/gbfs-system/issues).
 
 ## License
-
 This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
-
 For any queries or contributions, please contact at becaye00@gmail.com
