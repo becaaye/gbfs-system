@@ -1,4 +1,6 @@
-![Build status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg)
+![Build status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=build)
+![Test status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=test)
+![Release status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg?branch=main&event=push&job=release)
 ![license](https://img.shields.io/badge/license-ISC-green)
 
 ## 1. Introduction
