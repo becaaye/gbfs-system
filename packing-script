@@ -35,8 +35,8 @@ echo_error() {
 echo_warning "Building package..."
 npm run build && echo_success "Build successful."
 
-# echo_warning "Running tests..."
-# npm test && echo_success "Tests passed."
+echo_warning "Running tests..."
+npm test && echo_success "Tests passed."
 
 echo_warning "Cleaning up old package files in current project..."
 rm -f *.tgz && echo_success "old package files cleaned"
@@ -56,10 +56,10 @@ if [ -f "$PACKAGE_FILE" ]; then
 
     echo_warning "Unzipping copied package..."
     tar -xzf "${NEW_DIR}/${PACKAGE_FILE}" -C "$NEW_DIR" --strip-components=1 && echo_success "Package unzipped successfully."
-
-    echo_warning "Cleaning package directory..."
-    find "${NEW_DIR}" -name "*.tgz" -exec rm {} \; && echo_success "OPERATION COMPLETED !"
 else
     echo_error "Error: Package file does not exist."
     exit 1
 fi
+
+echo_warning "Cleaning package files..."
+rm -f *.tgz && find "${NEW_DIR}" -name "*.tgz" -exec rm {} \; && echo_success "OPERATION COMPLETED !"

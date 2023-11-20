@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  pull-request:
+    branches:
+      - main
+
+jobs:
+  release:
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - runs: npm ci
+      - runs: npm run build
+      - runs: rm -rf node_modules
+      - uses: ./dist 
