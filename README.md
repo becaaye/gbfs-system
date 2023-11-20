@@ -1,4 +1,5 @@
-![version](https://img.shields.io/badge/version-1.0.0-blue) ![license](https://img.shields.io/badge/license-ISC-green)
+![Release Workflow Status](https://github.com/becaaye/gbfs-system/actions/workflows/release.yml/badge.svg)
+![license](https://img.shields.io/badge/license-ISC-green)
 
 ## 1. Introduction
 
