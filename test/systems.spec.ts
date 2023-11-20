@@ -1,10 +1,10 @@
 import { Systems } from "../src/Systems";
-import {IOperator} from "../src/types.js";
+import {ISystem} from "../src/types.js";
 
 describe("Systems class", () => {
   let globalSystems: Systems;
 
-  const systemMock: IOperator = {
+  const systemMock: ISystem = {
     countryCode: "CA",
     name: "BIXI Montréal",
     location: "Montréal, CA",
@@ -28,7 +28,7 @@ describe("Systems class", () => {
 
   it("Systems objects should have the right properties", () => {
     globalSystems.getAllSystems.forEach(operator => 
-        expect(operator).toMatchObject<IOperator>({
+        expect(operator).toMatchObject<ISystem>({
             countryCode: expect.any(String),
             name: expect.any(String),
             location: expect.any(String),
@@ -63,7 +63,7 @@ describe("Systems class", () => {
   if (systemMock.systemID) {
     it("should find the right system with its system ID", () => {
       const foundSystem = globalSystems.findBySystemID(systemMock.systemID);
-      expect(foundSystem).toMatchObject<IOperator>(foundSystem);
+      expect(foundSystem).toMatchObject<ISystem>(foundSystem);
       expect(foundSystem.systemID).toBe(systemMock.systemID);
     });
   }
