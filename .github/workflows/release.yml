@@ -9,6 +9,10 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -18,7 +22,7 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run semantic-release
-      - run: rm -rf node_moduless
+      - run: rm -rf node_modules
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
