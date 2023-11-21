@@ -6,7 +6,7 @@ export type ISystem = {
   systemID: string;
   url: string;
   autoDiscoveryURL: string;
-  validationReport: string;
+  validationReport?: string | undefined;
 }
 
 export type CsvRow = {

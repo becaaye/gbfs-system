@@ -5,9 +5,10 @@ jest.config.js
 src/
 test/
 node_modules/
+.github/
 
 .gitignore
-jest.config.cjs
+*.cjs
 packing-script
 
 *.log

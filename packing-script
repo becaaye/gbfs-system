@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 # and copies it to the test project as a dependency if all previous steps are successful.
 
 DEST_DIR="/Users/becaye/PROJECTS/npm-tester/node_modules"
-NEW_DIR="${DEST_DIR}/@becaaye/gbfs-system"
+NEW_DIR="${DEST_DIR}/gbfs-system"
 
 set -e # Exit immediately if a command exits with a non-zero status.
 
