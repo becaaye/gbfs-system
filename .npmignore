@@ -5,6 +5,7 @@ jest.config.js
 src/
 test/
 node_modules/
+.github/
 
 .gitignore
 *.cjs
