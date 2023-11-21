@@ -17,8 +17,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - run: npm run build
+      - run: npm run semantic-release
+      - run: rm -rf node_moduless
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm run semantic-release
-      - run: rm -rf node_modules
