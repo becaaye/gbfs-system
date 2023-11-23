@@ -157,6 +157,10 @@ export class Gbfs {
     return this.fetchData(feedURL!);
   }
 
+  // Overloaded method signatures for stationInfo()
+  async stationInfo(): Promise<StationInfo[]>;
+  async stationInfo(stationId: string): Promise<StationInfo>;
+
   /**
    * Fetches station_information feed realtime data.
    * @param {string} stationId - (Optional) The ID of a specific station to fetch data for.
@@ -183,6 +187,10 @@ export class Gbfs {
       throw error;
     }
   }
+
+  // Overloaded method signatures for stationStatus()
+  async stationStatus(): Promise<StationStatus[]>;
+  async stationStatus(stationId: string): Promise<StationStatus>;
 
   /**
    * Fetches station_status feed realtime data.
