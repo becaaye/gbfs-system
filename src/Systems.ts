@@ -1,6 +1,6 @@
 import axios from "axios";
 import csvParser from "csv-parser";
-import { CsvRow, ISystem } from "types.js";
+import { CsvRow, ISystem } from "./types.js";
 
 /**
  * Get all registered gbfs systems and perform search using a known location, name, system Id or country code.
