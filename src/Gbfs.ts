@@ -25,7 +25,7 @@ export class Gbfs {
   /**
    * Instanciate the Gbfs class.
    * @param autoDiscoveryURL - The URL of the GBFS auto-discovery endpoint.
-   * @param preferredFeedLanguage - (Optional) The preferred language code for fetching GBFS data.
+   * @param preferredFeedLanguage - [Optional] The preferred language code for fetching GBFS data.
    * @returns A new instance of the Gbfs class.
    */
   private constructor(
@@ -41,7 +41,7 @@ export class Gbfs {
    * @param {string} autoDiscoveryURL - The URL of the GBFS system.
    * That URL can be found in the operator API documentation, or by checking the MobilityData maintained system.csv.
    * The {Systems} module of this library also provide a way to get the autoDiscoveryURL for a registered operator.
-   * @param {string} preferredFeedLanguage - (Optional) The language code you want to get the feeds data from.
+   * @param {string} preferredFeedLanguage - [Optional] - The language code you want to get the feeds data from.
    * Some operators provide their gbfs system in multiple languages depending on their public's needs.
    * @
    */
@@ -157,15 +157,19 @@ export class Gbfs {
     return this.fetchData(feedURL!);
   }
 
-  // Overloaded method signatures for stationInfo()
+  /**
+   * Fetches station_informations feed realtime data.
+   * @returns An object of station_informations data for all stations.
+   */
   async stationInfo(): Promise<StationInfo[]>;
-  async stationInfo(stationId: string): Promise<StationInfo>;
 
   /**
-   * Fetches station_information feed realtime data.
-   * @param {string} stationId - (Optional) The ID of a specific station to fetch data for.
-   * @returns An array of station information objects, or a single station information object if a stationId is provided.
+   * Fetches station_informations feed realtime data.
+   * @param stationId - The ID of the station to fetch station_informations data for.
+   * @returns The station_informations data of the found station.
    */
+  async stationInfo(stationId: string): Promise<StationInfo>;
+
   async stationInfo(stationId?: string): Promise<StationInfo[] | StationInfo> {
     try {
       const {
@@ -188,15 +192,19 @@ export class Gbfs {
     }
   }
 
-  // Overloaded method signatures for stationStatus()
+  /**
+   * Fetches station_status feed realtime data.
+   * @returns An array of station_status data for all stations.
+   */
   async stationStatus(): Promise<StationStatus[]>;
-  async stationStatus(stationId: string): Promise<StationStatus>;
 
   /**
    * Fetches station_status feed realtime data.
-   * @param stationId - (Optional) The ID of a specific station to fetch status for.
-   * @returns An array of station status objects, or a single station status object if a stationId is provided.
+   * @param stationId - The ID of the station to fetch station_status data for.
+   * @returns The station_status data of the found station.
    */
+  async stationStatus(stationId: string): Promise<StationStatus>;
+
   async stationStatus(
     stationId?: string
   ): Promise<StationStatus[] | StationStatus> {
@@ -223,7 +231,7 @@ export class Gbfs {
 
   /**
    * Fetches system_information feed data.
-   * @returns the system_information feed data as an object.
+   * @returns The system_information feed data as an object.
    */
   async systemInfo(): Promise<SystemInfo> {
     try {
