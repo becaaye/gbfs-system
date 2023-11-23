@@ -62,10 +62,10 @@ export type StationStatus = {
   num_docks_available?: number;
   vehicle_docks_available?: any;
   num_docks_disabled?: number;
-  is_installed: boolean;
-  is_renting: boolean;
-  is_returning: boolean;
-  last_reported: number;
+  is_installed?: boolean;
+  is_renting?: boolean;
+  is_returning?: boolean;
+  last_reported?: number;
 }
 
 export type StationInfo = {
@@ -118,4 +118,43 @@ export type SystemInfo = {
   privacy_last_updated?: string;
   rental_apps?: string[];
   brand_assets?: string[];
+}
+
+export type StationUnified = {
+  station_id: string;
+  name?: string;
+  short_name?: string;
+  lat: number;
+  lon: number;
+  address?: string;
+  cross_street?: string;
+  region_id?: string;
+  post_code?: string;
+  station_opening_hours?: string;
+  rental_methods?: Array<string>;
+  is_virtual_station?: boolean;
+  station_area?: number[];
+  parking_type?: string;
+  parking_hoop?: boolean;
+  contact_phone?: string;
+  capacity?: number;
+  vehicle_type_area_capacity?: any;
+  vehicle_type_dock_capacity?: any;
+  is_valet_station?: boolean;
+  is_charging_station?: boolean;
+  rental_uris?: {
+    android?: URL;
+    ios?: URL;
+    web?: URL;
+  };
+  num_vehicles_available?: number;
+  vehicle_types_available?: any;
+  num_vehicles_disabled?: number;
+  num_docks_available?: number;
+  vehicle_docks_available?: any;
+  num_docks_disabled?: number;
+  is_installed?: boolean;
+  is_renting?: boolean;
+  is_returning?: boolean;
+  last_reported?: number;
 }

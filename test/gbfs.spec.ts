@@ -57,4 +57,17 @@ describe('Gbfs class', () => {
       name: expect.any(String),
     });
   });
+
+  it('should fetch unified station_info and station_status data', async () => {
+    const result = await gbfs.stationUnified(stationId);
+    expect(result).toMatchObject({
+      station_id: expect.any(String),
+      name: expect.any(String),
+      lat: expect.any(Number),
+      lon: expect.any(Number),
+      num_docks_available: expect.any(Number),
+      is_installed: expect.any(Number),
+      is_charging: expect.any(Boolean),
+    });
+  });
 });

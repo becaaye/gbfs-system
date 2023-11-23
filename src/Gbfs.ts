@@ -9,6 +9,7 @@ import {
   StationStatusResponseObject,
   SystemInfo,
   SystemInfoResponseObject,
+  StationUnified,
 } from "./types.js";
 
 /**
@@ -95,7 +96,9 @@ export class Gbfs {
   private async ensureInitialized(): Promise<void> {
     if (this.gbfsData && this.gbfsSupportedLanguages) return;
     try {
-      const { data } = await axios.get<GbfsResponse>(this.autoDiscoveryURL, {headers:{'Content-Type': 'application/json'}});
+      const { data } = await axios.get<GbfsResponse>(this.autoDiscoveryURL, {
+        headers: { "Content-Type": "application/json" },
+      });
       this.gbfsData = data.data;
       this.gbfsSupportedLanguages = Object.keys(this.gbfsData);
     } catch (error) {
@@ -140,7 +143,9 @@ export class Gbfs {
    */
   private async fetchData(url: string): Promise<unknown> {
     try {
-      const { data } = await axios.get<unknown>(url, {headers:{'Content-Type': 'application/json'}});
+      const { data } = await axios.get<unknown>(url, {
+        headers: { "Content-Type": "application/json" },
+      });
       return data;
     } catch (error) {
       throw new Error(`Failed to retrieve data from ${url}: ${error}`);
@@ -241,6 +246,54 @@ export class Gbfs {
       if (!data.system_id)
         throw new Error("Unable to retrieve the system informations");
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Combines station information and status, prioritizing station information in case of property overlap.
+   * @returns A combination of station_information and station_status for each station.
+   */
+  async stationUnified(): Promise<StationUnified[]>;
+
+
+  /**
+   * Combines station information and status, prioritizing station information in case of property overlap.
+   * @param stationId - The ID of a specific station.
+   * @returns A combination of station_information and station_status for the found station.
+   */
+  async stationUnified(stationId?: string): Promise<StationUnified>;
+
+
+  async stationUnified(stationId?: string): Promise<StationUnified[] | StationUnified> {
+    try {
+      let stationInfoData : StationInfo | StationInfo[];
+      let stationStatusData : StationStatus | StationStatus[];
+
+      if (typeof stationId === 'string') {
+        stationInfoData = await this.stationInfo(stationId) as StationInfo;
+        stationStatusData = await this.stationStatus(stationId) as StationStatus;
+        return {
+          ...stationStatusData,
+          ...stationInfoData,
+        };
+      } else {
+        stationInfoData = await this.stationInfo() as StationInfo[];
+        stationStatusData = await this.stationStatus() as StationStatus[];
+
+        const combinedData = stationInfoData.map((info: StationInfo) => {
+          const status = Array.isArray(stationStatusData) 
+            ? stationStatusData.find((status: StationStatus) => status.station_id === info.station_id)
+            : stationStatusData;
+          return {
+            ...status,
+            ...info,
+          };
+        });
+
+        return combinedData;
+      }
     } catch (error) {
       throw error;
     }
