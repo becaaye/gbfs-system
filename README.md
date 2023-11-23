@@ -61,7 +61,7 @@ console.log(system_data_by_country);
     autoDiscoveryURL: 'https://riodejaneiro.public...gbfs.json',
   ...
   },
-  and 205 more...
+  and 10 more...
 ]
 */
 
@@ -155,11 +155,32 @@ console.log(system_info_data);
   ...
 } 
 */
+
+// Get unified station_info and station_status data
+const unified_stations_data = await gbfs.stationUnified();
+console.log(unified_stations_data);
+/* 
+[
+  {
+    "station_id": "1",
+    "num_bikes_available": 16,
+    "num_ebikes_available": 3,
+    "num_docks_available": 8,
+    "name": "Métro Champ-de-Mars ( Viger / Sanguinet )",
+    "short_name": "6001",
+    "lat": 45.51025293,
+    "lon": -73.5567766,
+    "capacity": 35,
+    ...
+  },
+  and 205 more...
+]
+*/
 ```
 
 #### 4.3 Get a Single Station Data
 
-For both `stationInfo()` and `stationStatus()`, retrieve data for a specific station by providing the `station_id`.
+For  `stationInfo()`, `stationUnified()` and `stationStatus()`, you can get a specific station data by providing its `station_id`.
 
 ```typescript
 gbfs.stationStatus("12").then((station) => console.log(station));
