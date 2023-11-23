@@ -1,6 +1,6 @@
 {
   "name": "gbfs-system",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A Node.js package that enables real-time data retrieval from GBFS (General Bikeshare Feed Specification) using the auto-discovery URLs provided by MobilityData. It allows developers to easily access and utilize live bikeshare system information, station information, station status, etc, and other valuable data for building innovative applications and services.",
   "type": "module",
   "main": "dist/index.js",
@@ -46,7 +46,7 @@
     "csv-parser": "^3.0.0"
   },
   "devDependencies": {
-    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^11.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^9.2.3",

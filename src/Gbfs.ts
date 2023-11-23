@@ -257,7 +257,6 @@ export class Gbfs {
    */
   async stationUnified(): Promise<StationUnified[]>;
 
-
   /**
    * Combines station information and status, prioritizing station information in case of property overlap.
    * @param stationId - The ID of a specific station.
