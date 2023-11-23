@@ -220,7 +220,7 @@ gbfs.isLanguageSupported("fr"); // true
 
 | Method              | Description                   | Parameters            | Returns          |
 | ------------------- | ----------------------------- | --------------------- | ---------------- |
-| `initialize`   | Static factory method that creates a new Systems instance. | - | `Systems` |
+| `initialize`        | Static factory method that creates a new Systems instance. | - | `Systems` |
 | `findByLocation`    | Finds systems in a given city | `location: string`    | `Array<ISystem>` |
 | `findByCountryCode` | Finds systems by country code | `countryCode: string` | `Array<ISystem>` |
 | `findBySystemID`    | Finds a system by its ID      | `systemID: string`    | `ISystem`        |
@@ -234,6 +234,7 @@ gbfs.isLanguageSupported("fr"); // true
 | `stationInfo`   | Fetches station information        | `stationId?: string` | `Array<StationInfo>` or `StationInfo`     |
 | `stationStatus` | Fetches station status             | `stationId?: string` | `Array<StationStatus>` or `StationStatus` |
 | `systemInfo`    | Fetches general system information | -                    | `SystemInfo`                         |
+| `stationUnified` | Combines station_info and station_status data | `stationId?: string` | `Array<StationUnified>` or `StationUnified` |
 | `getSupportedLanguages`   | Returns an array of all feed language codes | - | `Array<string>`|
 | `isLanguageSupported`   | Returns true if the feed language code is supported | `language:string` | `Boolean` |
 
@@ -255,7 +256,7 @@ Error: Failed to retrieve data from https://gbfs.example.com/system_information.
 - For bugs and feature requests, please use the [issues section on GitHub](https://github.com/becaaye/gbfs-system/issues).
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [ISC License](LICENSE).
 
 ## Contact
-For any queries or contributions, please contact at becaye00@gmail.com
+For any queries or contributions, please contact me [here](mailto:becaye00@gmail.com)
